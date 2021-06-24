@@ -4,9 +4,10 @@ import CreateUserService from '../services/CreateUserService'
 class CreateUserController{
     async execute(req:Request, res:Response){
 
-        const {name, email, admin} = req.body
+        const {name, email, admin, password} = req.body
+
         
-        const user = await CreateUserService.execute({name, email, admin})
+        const user = await CreateUserService.execute({name, email, admin, password})
         
         return res.status(201).json(user)
     }
