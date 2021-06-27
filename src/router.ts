@@ -1,18 +1,33 @@
 import {Router} from 'express'
+import ListTagsController from './controllers/ListTagsController'
 import CreateTagController from './controllers/CreateTagController'
+import ListUsersController from './controllers/ListUsersController'
 import CreateUserController from './controllers/CreateUserController'
-import ensureAdminMiddleware from './middlewares/EnsureAdminMiddleware'
+import ensureAuthMiddleware from './middlewares/ensureAuthMiddleware'
+import ensureAdminMiddleware from './middlewares/ensureAdminMiddleware'
 import GenUserTokenController from './controllers/GenUserTokenController'
 import CreateComplimentController from './controllers/CreateComplimentController'
+import ListUserSendedComplimentsController from './controllers/ListUserSendedComplimentsController'
+import ListUserReceivedComplimentsController from './controllers/ListUserReceivedComplimentsController'
 
 const router = Router()
 
-router.post("/users", CreateUserController.execute)
+// ============ Users routes ==============
+router.post("/users/signup", CreateUserController.execute)
 
-router.post("/tags", ensureAdminMiddleware, CreateTagController.execute)
+router.post("/users/signin", GenUserTokenController.execute)
 
-router.post("/signin", GenUserTokenController.execute)
+router.get("/users", ensureAuthMiddleware,ListUsersController.execute)
 
-router.post("/compliments", CreateComplimentController.execute)
+// ========================================
+
+router.post("/tags", ensureAuthMiddleware, ensureAdminMiddleware, CreateTagController.execute)
+
+router.get("/tags", ListTagsController.execute)
+
+router.post("/compliments", ensureAuthMiddleware, CreateComplimentController.execute)
+
+router.get("/compliments/received", ListUserReceivedComplimentsController.execute)
+router.get("/compliments/sended", ListUserSendedComplimentsController.execute)
 
 export default router
